@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  event-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # Frontend
+      - "4000:4000" # Backend
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+    volumes:
+      # Mount environment files if needed
+      - ./backend/env.prod:/app/backend/.env:ro
+      - ./frontend/env.prod:/app/frontend/.env:ro
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - event-manager-network
+  # Optional: Add a database service if needed in the future
+  # postgres:
+  #   image: postgres:15-alpine
+  #   environment:
+  #     POSTGRES_DB: event_manager
+  #     POSTGRES_USER: event_user
+  #     POSTGRES_PASSWORD: event_password
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - event-manager-network
+
+networks:
+  event-manager-network:
+    driver: bridge
+
+# volumes:
+#   postgres_data: 
