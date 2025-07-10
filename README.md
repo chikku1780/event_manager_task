@@ -41,6 +41,11 @@ A comprehensive event management system built with Next.js, GraphQL, and TypeScr
 - **Role Assignment**: Promote users to Event Manager or Admin roles
 - **System Overview**: Dashboard with user statistics and management tools
 
+## Branches
+
+- **main**: The stable production branch. All reviewed and tested features are merged here.
+- **develop**: The active development branch. New features and fixes are first pushed here before being merged into main.
+
 ## Tech Stack
 
 ### Frontend
@@ -70,7 +75,7 @@ A comprehensive event management system built with Next.js, GraphQL, and TypeScr
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd Event-Manager
+   cd <repo>
    ```
 
 2. **Install dependencies**
@@ -94,9 +99,54 @@ A comprehensive event management system built with Next.js, GraphQL, and TypeScr
 
 ### Demo Accounts
 
-**Super Admin Account:**
-- Email: `chikku1780@gmail.com`
-- Password: `Chikku@123`
+The application comes with pre-configured demo accounts for testing different user roles:
+
+#### 🛡️ Super Admin Account
+- **Email:** `chikku1780@gmail.com`
+- **Password:** `Chikku@123`
+- **Role:** Admin
+- **Permissions:** Full system access, user management, role assignment
+
+#### 👥 Event Manager Account
+- **Email:** `user1@gmail.com`
+- **Password:** `Pass@123`
+- **Role:** Event Manager
+- **Permissions:** Create/manage events, approve/reject attendees
+
+#### 👤 Regular User Accounts
+- **Email:** `user2@gmail.com`
+- **Password:** `Pass@123`
+- **Role:** User
+- **Permissions:** View events, register as attendee
+
+- **Email:** `user3@gmail.com`
+- **Password:** `Pass@123`
+- **Role:** User
+- **Permissions:** View events, register as attendee
+
+### 🧪 Testing Scenarios
+
+Here are some recommended testing scenarios using the demo accounts:
+
+#### **Admin Testing (chikku1780@gmail.com)**
+1. **User Management**: Visit `/admin` to view all users and manage roles
+2. **Role Assignment**: Promote regular users to Event Manager or Admin roles
+3. **System Overview**: Access admin dashboard with user statistics
+
+#### **Event Manager Testing (user1@gmail.com)**
+1. **Event Creation**: Create new events with tags and descriptions
+2. **Attendee Management**: Approve/reject attendee requests for your events
+3. **Event Editing**: Modify event details and manage attendees
+
+#### **Regular User Testing (user2@gmail.com / user3@gmail.com)**
+1. **Event Discovery**: Browse events and use search/filter features
+2. **RSVP Process**: Register as attendee for events
+3. **Role Requests**: Request promotion to Event Manager role
+
+#### **Cross-Account Testing**
+1. **Event Manager → User**: Create an event as Event Manager, then login as User to register
+2. **Admin → Event Manager**: Promote a User to Event Manager, then test their new permissions
+3. **Attendee Workflow**: Register as attendee with one account, approve/reject with Event Manager account
 
 ## User Roles & Permissions
 
