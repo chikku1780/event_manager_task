@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  event-manager:
+    image: ghcr.io/chikku1780/event_manager_task:develop
+    container_name: event-manager-staging
+    ports:
+      - "3001:3000" # Frontend
+      - "4001:4000" # Backend
+    environment:
+      - NODE_ENV=staging
+      - PORT=4000
+    volumes:
+      - ./backend/env.staging:/app/backend/.env:ro
+      - ./frontend/env.staging:/app/frontend/.env:ro
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - event-manager-staging-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.event-manager-staging.rule=Host(`staging.eventmanager.com`)"
+      - "traefik.http.routers.event-manager-staging.tls=true"
+
+  # Monitoring stack
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus-staging
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - event-manager-staging-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana-staging
+    ports:
+      - "3002:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - event-manager-staging-network
+
+  # Reverse proxy
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik-staging
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080" # Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+    networks:
+      - event-manager-staging-network
+
+networks:
+  event-manager-staging-network:
+    driver: bridge
+
+volumes:
+  prometheus_data:
+  grafana_data:

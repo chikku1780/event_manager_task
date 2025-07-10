@@ -64,6 +64,17 @@ A comprehensive event management system built with Next.js, GraphQL, and TypeScr
 - **bcryptjs**: Password hashing
 - **jsonwebtoken**: JWT authentication
 
+### DevOps & Infrastructure
+- **Docker**: Containerization with multi-stage builds
+- **Docker Compose**: Multi-container orchestration
+- **Kubernetes**: Production orchestration and scaling
+- **GitHub Actions**: CI/CD automation
+- **Jenkins**: Alternative CI/CD pipeline
+- **Prometheus**: Metrics collection and monitoring
+- **Grafana**: Metrics visualization and dashboards
+- **ELK Stack**: Log aggregation and analysis
+- **Nginx**: Reverse proxy and load balancing
+
 ## Getting Started
 
 ### Prerequisites
@@ -253,6 +264,20 @@ npm run build:backend   # Build backend only
 
 # Production
 npm start               # Start production servers
+
+# Docker
+docker-compose up --build    # Start with Docker Compose
+docker-compose -f deploy/docker-compose.staging.yml up -d    # Staging deployment
+docker-compose -f deploy/docker-compose.production.yml up -d # Production deployment
+
+# Kubernetes
+kubectl apply -f k8s/event-manager-deployment.yml    # Deploy to Kubernetes
+kubectl get pods -n event-manager                    # Check deployment status
+
+# Deployment Scripts
+./deploy/deploy.sh staging    # Deploy to staging
+./deploy/deploy.sh production # Deploy to production
+./deploy/deploy.sh rollback   # Rollback deployment
 ```
 
 ### Environment Variables
@@ -268,13 +293,49 @@ PORT=4000
 NEXT_PUBLIC_GRAPHQL_URL=http://localhost:4000/graphql
 ```
 
+## CI/CD Pipeline
+
+The Event Manager project includes comprehensive CI/CD pipelines for automated testing, building, and deployment.
+
+### GitHub Actions
+- **Automated Testing**: Runs on every push and pull request
+- **Docker Build**: Multi-stage builds with security scanning
+- **Deployment**: Automatic deployment to staging and production
+- **Security**: Trivy vulnerability scanning and CodeQL analysis
+
+### Jenkins Pipeline
+- **Parallel Execution**: Runs tests and builds in parallel
+- **Advanced Features**: Comprehensive error handling and rollback
+- **Multi-environment**: Support for staging and production deployments
+
+### Deployment Strategies
+- **Blue-Green**: Zero-downtime deployments with rollback capability
+- **Rolling Updates**: Kubernetes-based rolling deployments
+- **Canary**: Gradual rollout with monitoring
+
+### Monitoring & Observability
+- **Prometheus**: Metrics collection and alerting
+- **Grafana**: Dashboard visualization
+- **ELK Stack**: Log aggregation and analysis
+- **Health Checks**: Comprehensive application monitoring
+
+For detailed CI/CD documentation, see [CICD.md](./CICD.md).
+
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Add tests if applicable
-5. Submit a pull request
+5. Ensure CI/CD pipeline passes
+6. Submit a pull request
+
+### Development Workflow
+1. **Feature Development**: Work on feature branches
+2. **Testing**: Ensure all tests pass locally
+3. **Code Review**: Submit PR for review
+4. **CI/CD**: Automated testing and deployment
+5. **Merge**: Merge to main after approval
 
 ## License
 

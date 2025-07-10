@@ -1,0 +1,54 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Event Manager Frontend
+  - job_name: 'event-manager-frontend'
+    static_configs:
+      - targets: ['event-manager:3000']
+    metrics_path: '/api/metrics'
+    scrape_interval: 10s
+
+  # Event Manager Backend
+  - job_name: 'event-manager-backend'
+    static_configs:
+      - targets: ['event-manager:4000']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Node Exporter (if running on host)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['host.docker.internal:9100']
+
+  # Docker containers
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['host.docker.internal:9323']
+
+  # Nginx (if using nginx)
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 30s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Recording rules for common queries
+rule_files:
+  - "rules/*.yml" 
